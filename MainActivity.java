@@ -1,22 +1,18 @@
 package com.paulnogas.mazesforprogrammers;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -33,6 +29,8 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
     private String[] mMazeAlgorithms;
+    private Grid mGrid;
+    private MazeGenerator[] mMazeGenerators;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +38,11 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
+        mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
+        mMazeGenerators[0] = new BinaryTreeMazeGenerator();
+        mMazeGenerators[1] = new BinaryTreeMazeGenerator();
 
-        Grid grid = new Grid(4,4);
-        BinaryTreeMaze.generateMaze(grid);
+        mGrid = new Grid(4, 4);
         //DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -69,9 +69,10 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onSectionAttached(int number) {
-        mTitle = mMazeAlgorithms[number-1];
-        TextView tv = (TextView) findViewById(R.id.section_label);
-        tv.setText("PAUL");
+        mTitle = mMazeAlgorithms[number - 1];
+        Grid maze = mMazeGenerators[number - 1].generateMaze(mGrid);
+        TextView tv = (TextView) findViewById(R.id.texty);
+        tv.setText(maze.toString());
     }
 
     public void restoreActionBar() {

@@ -6,9 +6,9 @@ import java.util.Random;
 /**
  * Created by Debbie on 2016-03-11.
  */
-public class BinaryTreeMaze {
+public class BinaryTreeMazeGenerator implements MazeGenerator {
 
-    public static Grid generateMaze( Grid grid){
+    public Grid generateMaze(Grid grid) {
         Random randomGenerator = new Random();
         for (Cell[] row : grid.cells) {
             for (Cell cell : row) {
