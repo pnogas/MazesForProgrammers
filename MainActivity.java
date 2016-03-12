@@ -1,6 +1,8 @@
 package com.paulnogas.mazesforprogrammers;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -31,18 +33,24 @@ public class MainActivity extends ActionBarActivity
     private String[] mMazeAlgorithms;
     private Grid mGrid;
     private MazeGenerator[] mMazeGenerators;
+    private int length;
+    private int width;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
 
         mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
         mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
         mMazeGenerators[0] = new BinaryTreeMazeGenerator();
         mMazeGenerators[1] = new BinaryTreeMazeGenerator();
+        width = 4;
+        length = 4;
 
-        mGrid = new Grid(4, 4);
+        //mGrid = new Grid(4, 4);
         //DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -70,7 +78,7 @@ public class MainActivity extends ActionBarActivity
 
     public void onSectionAttached(int number) {
         mTitle = mMazeAlgorithms[number - 1];
-        Grid maze = mMazeGenerators[number - 1].generateMaze(mGrid);
+        Grid maze = mMazeGenerators[number - 1].generateMaze(new Grid(width, length));
         TextView tv = (TextView) findViewById(R.id.texty);
         tv.setText(maze.toString());
     }
@@ -105,7 +113,8 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(context, SettingsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
