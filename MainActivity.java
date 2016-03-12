@@ -40,6 +40,9 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
+
+        Grid grid = new Grid(4,4);
+        BinaryTreeMaze.generateMaze(grid);
         //DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -67,6 +70,8 @@ public class MainActivity extends ActionBarActivity
 
     public void onSectionAttached(int number) {
         mTitle = mMazeAlgorithms[number-1];
+        TextView tv = (TextView) findViewById(R.id.section_label);
+        tv.setText("PAUL");
     }
 
     public void restoreActionBar() {
