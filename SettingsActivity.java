@@ -1,4 +1,6 @@
 package com.paulnogas.mazesforprogrammers;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,11 +11,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.pavelsikun.seekbarpreference.SeekBarPreference;
+import com.paulnogas.seekbarpreference.SeekBarPreference;
 
 import static android.view.View.generateViewId;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    public static final String MAZE_PREFS = "MazePreferences";
+
+    static SeekBarPreference widthSeekBarPreference;
+    static SeekBarPreference heightSeekBarPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,42 +54,45 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MAZE_PREFS, Context.MODE_PRIVATE);
 
-            final SeekBarPreference seekBarPreference1 = new SeekBarPreference(getActivity());
-            this.getPreferenceScreen().addPreference(seekBarPreference1);
+            widthSeekBarPreference = new SeekBarPreference(getActivity());
+            this.getPreferenceScreen().addPreference(widthSeekBarPreference);
 
-            seekBarPreference1.setTitle("Runtime-Added Preference");
-            seekBarPreference1.setSummary("This preference was added directly from java");
-            seekBarPreference1.setMaxValue(444);
-            seekBarPreference1.setMinValue(111);
-            seekBarPreference1.setInterval(4);
-            seekBarPreference1.setMeasurementUnit("demos");
-            seekBarPreference1.setCurrentValue(333);
+            widthSeekBarPreference.setTitle(getResources().getString(R.string.width_pref_title));
+            widthSeekBarPreference.setSummary("The number of rows in your maze");
+            widthSeekBarPreference.setMaxValue(17);
+            widthSeekBarPreference.setMinValue(2);
+            widthSeekBarPreference.setInterval(1);
+            widthSeekBarPreference.setMeasurementUnit("rows");
+            int currentWidth = sharedPreferences.getInt((String) widthSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_width));
+            widthSeekBarPreference.setCurrentValue(currentWidth);
 
-            Toast.makeText(getActivity(), "In 10 seconds last seekbarPreference will change it's" +
-                    " params(DEMO of manipulating from java :D)", Toast.LENGTH_LONG).show();
+            heightSeekBarPreference = new SeekBarPreference(getActivity());
+            this.getPreferenceScreen().addPreference(heightSeekBarPreference);
 
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(@NonNull Void... params) {
-                    try { Thread.sleep(10 * 1000); }catch (Exception e) {/*IGNORE*/}
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(@NonNull Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    seekBarPreference1.setMinValue(-222);
-                    seekBarPreference1.setMaxValue(999);
-                    seekBarPreference1.setInterval(1);
-                    seekBarPreference1.setCurrentValue(777);
-                    seekBarPreference1.setMeasurementUnit("<- changed!");
-                    if(getActivity() != null) {
-                        Toast.makeText(getActivity(), "SeekbarPreference params changed!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-            }.execute();
+            heightSeekBarPreference.setTitle(getResources().getString(R.string.length_pref_title));
+            heightSeekBarPreference.setSummary("The number of columns in your maze");
+            heightSeekBarPreference.setMaxValue(10);
+            heightSeekBarPreference.setMinValue(2);
+            heightSeekBarPreference.setInterval(1);
+            heightSeekBarPreference.setMeasurementUnit("columns");
+            int currentHeight = sharedPreferences.getInt((String) heightSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_length));
+            heightSeekBarPreference.setCurrentValue(currentHeight);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        savePrefs();
+    }
+
+    private void savePrefs() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(MAZE_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt((String) widthSeekBarPreference.getTitle(), widthSeekBarPreference.getCurrentValue());
+        editor.putInt((String) heightSeekBarPreference.getTitle(), heightSeekBarPreference.getCurrentValue());
+        editor.apply();
     }
 }

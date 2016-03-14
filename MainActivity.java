@@ -3,6 +3,8 @@ package com.paulnogas.mazesforprogrammers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
+
+import com.paulnogas.mazesforprogrammers.MaterialSeekBarController;
 
 
 public class MainActivity extends ActionBarActivity
@@ -47,10 +51,13 @@ public class MainActivity extends ActionBarActivity
         mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
         mMazeGenerators[0] = new BinaryTreeMazeGenerator();
         mMazeGenerators[1] = new BinaryTreeMazeGenerator();
-        width = 4;
-        length = 4;
+
+        //width = 15;
+        //length = 9;
 
         //mGrid = new Grid(4, 4);
+        //MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
+        //mazeDrawView.setGrid(mGrid);
         //DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -78,9 +85,33 @@ public class MainActivity extends ActionBarActivity
 
     public void onSectionAttached(int number) {
         mTitle = mMazeAlgorithms[number - 1];
+        length = getMazePrefLength();
+        width = getMazePrefWidth();
         Grid maze = mMazeGenerators[number - 1].generateMaze(new Grid(width, length));
-        TextView tv = (TextView) findViewById(R.id.texty);
-        tv.setText(maze.toString());
+
+        MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
+        mazeDrawView.setGrid(maze);
+        mazeDrawView.clearRoute();
+        //TextView tv = (TextView) findViewById(R.id.texty);
+        //tv.setText(maze.toString());
+
+        /*if (number == 2) {
+            MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
+            if (mazeDrawView != null && mazeDrawView.getCanvas() != null) {
+                mazeDrawView.drawGridToCanvas(maze);
+            }
+        }*/
+
+    }
+
+    private int getMazePrefLength() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.MAZE_PREFS, MODE_PRIVATE);
+        return sharedPreferences.getInt(getResources().getString(R.string.length_pref_title), getResources().getInteger(R.integer.default_maze_length));
+    }
+
+    private int getMazePrefWidth() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.MAZE_PREFS, MODE_PRIVATE);
+        return sharedPreferences.getInt(getResources().getString(R.string.width_pref_title), getResources().getInteger(R.integer.default_maze_width));
     }
 
     public void restoreActionBar() {

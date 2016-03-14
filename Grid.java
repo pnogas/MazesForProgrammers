@@ -1,5 +1,9 @@
 package com.paulnogas.mazesforprogrammers;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Optional;
@@ -87,5 +91,48 @@ public class Grid {
             output = e.toString();
         }
         return output;
+    }
+
+    public void drawToCanvas(Canvas canvas) {
+        int cellSize = 10;
+        //int image_width = cellSize * columns;
+        //int image_height = cellSize * rows;
+        //canvas.onSizeChanged();
+        Paint wallPainter = makeWallPainter();
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                int x1 = column * cellSize;
+                int y1 = row * cellSize;
+                int x2 = x1 + cellSize;
+                int y2 = y1 + cellSize;
+                if (!cells[row][column].north.isPresent()) {
+                    canvas.drawLine(x1, y1, x2, y1, wallPainter);
+                }
+                if (!cells[row][column].west.isPresent()) {
+                    canvas.drawLine(x1, y1, x1, y2, wallPainter);
+                }
+                if (!cells[row][column].east.isPresent()) {
+                    canvas.drawLine(x2, y1, x2, y2, wallPainter);
+                }
+                if (!cells[row][column].south.isPresent()) {
+                    canvas.drawLine(x1, y2, x2, y2, wallPainter);
+                }
+            }
+        }
+    }
+
+    private Paint makeWallPainter() {
+        Paint mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeWidth(4f);
+        return mPaint;
+    }
+
+    public void drawToCanvas(MazeDrawView mazeDrawView) {
+
     }
 }
