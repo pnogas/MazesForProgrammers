@@ -4,17 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.View;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.google.common.base.Optional;
 
@@ -80,15 +74,15 @@ public class MazeDrawView extends View {
 
         if (grid.isPresent()) {
             Grid maze = grid.get();
-            int cellWidth = canvas.getWidth() / maze.columns;
-            int cellHeight = canvas.getWidth() / maze.rows;
-            for (int row = 0; row < maze.rows; row++) {
-                for (int column = 0; column < maze.columns; column++) {
+            int cellWidth = canvas.getWidth() / maze.getColumns();
+            int cellHeight = canvas.getWidth() / maze.getRows();
+            for (int row = 0; row < maze.getRows(); row++) {
+                for (int column = 0; column < maze.getColumns(); column++) {
                     int x1 = column * cellWidth;
                     int y1 = row * cellHeight;
                     int x2 = x1 + cellWidth;
                     int y2 = y1 + cellHeight;
-                    Cell currentCell = maze.cells[row][column];
+                    Cell currentCell = maze.cellAt(row, column);
                     if (!currentCell.linkedCells.contains(currentCell.north.orNull())) {
                         canvas.drawLine(x1, y1, x2, y1, wallPainter);
                     }

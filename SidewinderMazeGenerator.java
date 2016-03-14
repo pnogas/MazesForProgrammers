@@ -4,25 +4,30 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by Debbie on 2016-03-14.
+ * Created by Paul Nogas on 2016-03-14
  */
 public class SidewinderMazeGenerator implements MazeGenerator {
     @Override
-    public Grid generateMaze(Grid grid) {
+    public NormalGrid generateMaze(NormalGrid grid) {
         Random randomGenerator = new Random();
+        ArrayList<Cell> run = new ArrayList<>();
         for (Cell[] row : grid.cells) {
+            run.clear();
             for (Cell cell : row) {
-                ArrayList<Cell> neighbours = new ArrayList<>();
-                if (cell.north.isPresent()) {
-                    neighbours.add(cell.north.get());
-                }
-                if (cell.east.isPresent()) {
-                    neighbours.add(cell.east.get());
-                }
-                if (neighbours.size() > 0) {
-                    int index = randomGenerator.nextInt(neighbours.size());
-                    Cell randomNeighbour = neighbours.get(index);
-                    cell.link(randomNeighbour, true); //is it ever false?
+                run.add(cell);
+                boolean atEasternBoundry = !cell.east.isPresent();
+                boolean atNorthernBoundry = !cell.north.isPresent();
+                boolean shouldCloseOut = atEasternBoundry || (!atNorthernBoundry && randomGenerator.nextInt(2) != 0);
+                if (shouldCloseOut) {
+                    Cell member = run.get(randomGenerator.nextInt(run.size()));
+                    if (member.north.isPresent()) {
+                        member.link(member.north.get(), true);
+                    }
+                    run.clear();
+                } else {
+                    if (cell.east.isPresent()) {
+                        cell.link(cell.east.get(), true);
+                    }
                 }
             }
         }

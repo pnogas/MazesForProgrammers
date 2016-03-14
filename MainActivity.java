@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -18,8 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
-
-import com.paulnogas.mazesforprogrammers.MaterialSeekBarController;
 
 
 public class MainActivity extends ActionBarActivity
@@ -35,7 +31,7 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
     private String[] mMazeAlgorithms;
-    private Grid mGrid;
+    private NormalGrid mGrid;
     private MazeGenerator[] mMazeGenerators;
     private int length;
     private int width;
@@ -50,7 +46,7 @@ public class MainActivity extends ActionBarActivity
         mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
         mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
         mMazeGenerators[0] = new BinaryTreeMazeGenerator();
-        mMazeGenerators[1] = new BinaryTreeMazeGenerator();
+        mMazeGenerators[1] = new SidewinderMazeGenerator();
 
         //width = 15;
         //length = 9;
@@ -87,20 +83,27 @@ public class MainActivity extends ActionBarActivity
         mTitle = mMazeAlgorithms[number - 1];
         length = getMazePrefLength();
         width = getMazePrefWidth();
-        Grid maze = mMazeGenerators[number - 1].generateMaze(new Grid(width, length));
+        Grid maze = mMazeGenerators[number - 1].generateMaze(new DistanceGrid(width, length));
+        Cell start = maze.cellAt(0,0);
+        Distances distances = start.getDistances();
+        maze.setDistances(distances);
+        String displayString = maze.toString();
+        displayString += "\n Solution: \n";
 
+        Distances solution = distances.pathTo(maze.cellAt(maze.getColumns()-1, 0));
+        maze.setDistances(solution);
+        displayString += maze.toString();
+
+        /*
         MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
         mazeDrawView.setGrid(maze);
         mazeDrawView.clearRoute();
-        //TextView tv = (TextView) findViewById(R.id.texty);
-        //tv.setText(maze.toString());
+        */
 
-        /*if (number == 2) {
-            MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
-            if (mazeDrawView != null && mazeDrawView.getCanvas() != null) {
-                mazeDrawView.drawGridToCanvas(maze);
-            }
-        }*/
+        /**/
+        TextView tv = (TextView) findViewById(R.id.texty);
+        tv.setText(displayString);
+
 
     }
 

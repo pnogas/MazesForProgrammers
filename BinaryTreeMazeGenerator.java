@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by Debbie on 2016-03-11.
+ * Created by Paul Nogas on 2016-03-11
  */
 public class BinaryTreeMazeGenerator implements MazeGenerator {
 
-    public Grid generateMaze(Grid grid) {
+    public NormalGrid generateMaze(NormalGrid grid) {
         Random randomGenerator = new Random();
         for (Cell[] row : grid.cells) {
             for (Cell cell : row) {

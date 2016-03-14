@@ -3,9 +3,10 @@ package com.paulnogas.mazesforprogrammers;
 import com.google.common.base.Optional;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by Debbie on 2016-03-11.
+ * Created by Paul Nogas on 2016-03-11
  */
 public class Cell {
     int row;
@@ -59,5 +60,24 @@ public class Cell {
             neighbourCells.add(west.get());
         }
         return neighbourCells;
+    }
+
+    public Distances getDistances(){
+        Distances distances = new Distances(this);
+        Set<Cell> frontierCells = new HashSet<>();
+        frontierCells.add(this);
+        while (!frontierCells.isEmpty()) {
+            Set<Cell> newFrontier = new HashSet<>();
+            for (Cell currentCell : frontierCells) {
+                for(Cell linkedCell : currentCell.linkedCells){
+                    if(!distances.getMeasuredCells().contains(linkedCell)) {
+                        distances.setDistanceToCell(linkedCell, distances.getDistanceToCell(currentCell) + 1);
+                        newFrontier.add(linkedCell);
+                    }
+                }
+            }
+            frontierCells = newFrontier;
+        }
+        return distances;
     }
 }

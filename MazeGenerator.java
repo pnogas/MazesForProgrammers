@@ -1,8 +1,8 @@
 package com.paulnogas.mazesforprogrammers;
 
 /**
- * Created by Debbie on 2016-03-12.
+ * Created by Paul Nogas on 2016-03-12
  */
 public interface MazeGenerator {
-    public Grid generateMaze(Grid grid);
+    public NormalGrid generateMaze(NormalGrid grid);
 }
