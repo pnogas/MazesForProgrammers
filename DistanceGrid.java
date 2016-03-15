@@ -1,13 +1,12 @@
 package com.paulnogas.mazesforprogrammers;
 
-import java.util.HashMap;
-
 /**
- * Created by Paul Nogas on 2016-03-14.
+ * Created by Paul Nogas on 2016-03-14
  */
 public class DistanceGrid extends NormalGrid {
 
-    private Distances distances;
+    protected Distances distances;
+    protected int maxDistance;
 
     public DistanceGrid(int rows, int columns) {
         super(rows, columns);
@@ -24,5 +23,17 @@ public class DistanceGrid extends NormalGrid {
 
     public void setDistances(Distances distances) {
         this.distances = distances;
+        Cell furthestCell = distances.getFurthestCell();
+        maxDistance = distances.getDistanceToCell(furthestCell);
+    }
+
+    @Override
+    public boolean isStartCell(Cell currentCell) {
+        return currentCell != null && currentCell.equals(distances.getRoot());
+    }
+
+    @Override
+    public boolean isFinishCell(Cell currentCell) {
+        return currentCell != null && currentCell.equals(distances.getFurthestCell());
     }
 }

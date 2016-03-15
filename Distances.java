@@ -1,6 +1,7 @@
 package com.paulnogas.mazesforprogrammers;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -8,11 +9,13 @@ import java.util.Set;
  */
 public class Distances {
     private Cell root;
+    private Cell goal;
     private HashMap<Cell, Integer> cells = new HashMap<>();
 
     public Distances(Cell cell) {
         this.root = cell;
         cells.put(root, 0);
+        goal = null;
     }
 
     public Integer getDistanceToCell(Cell cell) {
@@ -43,5 +46,24 @@ public class Distances {
         return breadCrumbs;
     }
 
-    
+    public Cell getRoot() {
+        return root;
+    }
+
+    public Cell getFurthestCell() {
+        if (goal != null) {
+            return goal;
+        }
+        int maxDistance = 0;
+        Cell maxCell = root;
+
+        for (Cell cell : cells.keySet()) {
+            if (cells.get(cell) > maxDistance) {
+                maxCell = cell;
+                maxDistance = cells.get(cell);
+            }
+        }
+        goal = maxCell;
+        return maxCell;
+    }
 }

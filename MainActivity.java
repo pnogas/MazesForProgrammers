@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
 
+import java.util.Map;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -83,26 +85,32 @@ public class MainActivity extends ActionBarActivity
         mTitle = mMazeAlgorithms[number - 1];
         length = getMazePrefLength();
         width = getMazePrefWidth();
-        Grid maze = mMazeGenerators[number - 1].generateMaze(new DistanceGrid(width, length));
-        Cell start = maze.cellAt(0,0);
+        Grid maze = mMazeGenerators[number - 1].generateMaze(new ColouredGrid(width, length));
+        Cell start = maze.cellAt(0, 0);
+
         Distances distances = start.getDistances();
-        maze.setDistances(distances);
-        String displayString = maze.toString();
+        Cell newStart = distances.getFurthestCell();
+
+        Distances newDistances = newStart.getDistances();
+        Cell newGoal = newDistances.getFurthestCell();
+
+        maze.setDistances(newDistances);
+        /*String displayString = maze.toString();
         displayString += "\n Solution: \n";
 
-        Distances solution = distances.pathTo(maze.cellAt(maze.getColumns()-1, 0));
+        Distances solution = newDistances.pathTo(maze.cellAt(newGoal.row, newGoal.column));
         maze.setDistances(solution);
-        displayString += maze.toString();
+        displayString += maze.toString();*/
 
-        /*
+        /**/
         MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
         mazeDrawView.setGrid(maze);
         mazeDrawView.clearRoute();
-        */
 
-        /**/
+
+        /*
         TextView tv = (TextView) findViewById(R.id.texty);
-        tv.setText(displayString);
+        tv.setText(displayString);*/
 
 
     }

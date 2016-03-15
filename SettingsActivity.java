@@ -61,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             widthSeekBarPreference.setTitle(getResources().getString(R.string.width_pref_title));
             widthSeekBarPreference.setSummary("The number of rows in your maze");
-            widthSeekBarPreference.setMaxValue(17);
+            widthSeekBarPreference.setMaxValue(25);//17 for ascii
             widthSeekBarPreference.setMinValue(2);
             widthSeekBarPreference.setInterval(1);
             widthSeekBarPreference.setMeasurementUnit("rows");
@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             heightSeekBarPreference.setTitle(getResources().getString(R.string.length_pref_title));
             heightSeekBarPreference.setSummary("The number of columns in your maze");
-            heightSeekBarPreference.setMaxValue(10);
+            heightSeekBarPreference.setMaxValue(25); //10 for ascii
             heightSeekBarPreference.setMinValue(2);
             heightSeekBarPreference.setInterval(1);
             heightSeekBarPreference.setMeasurementUnit("columns");

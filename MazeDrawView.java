@@ -23,6 +23,9 @@ public class MazeDrawView extends View {
     Context context;
     private Paint routePainter;
     private Paint wallPainter;
+    private Paint colourPainter;
+    private Paint startPainter;
+    private Paint finishPainter;
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
@@ -34,9 +37,19 @@ public class MazeDrawView extends View {
         tracePath = new Path();
 
         // and we set a new Paint with the desired attributes
-        routePainter = makeRoutePainter();
-        wallPainter = makeWallPainter();
-
+        routePainter = makeLinePainter();
+        routePainter.setColor(Color.RED);
+        wallPainter = makeLinePainter();
+        wallPainter.setColor(Color.BLACK);
+        colourPainter = makeLinePainter();
+        colourPainter.setColor(Color.WHITE);
+        colourPainter.setStyle(Paint.Style.FILL);
+        startPainter = makeLinePainter();
+        startPainter.setColor(Color.BLUE);
+        startPainter.setStyle(Paint.Style.FILL);
+        finishPainter = makeLinePainter();
+        finishPainter.setColor(Color.YELLOW);
+        finishPainter.setStyle(Paint.Style.FILL);
     }
 
     public void setGrid(Grid grid) {
@@ -55,34 +68,33 @@ public class MazeDrawView extends View {
         mCanvas = new Canvas(mBitmap);
     }
 
-    public Canvas getCanvas() {
-        return mCanvas;
-    }
-
     // override onDraw
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        this.setWillNotDraw(false); //necessary??!!
+        //this.setWillNotDraw(false); //necessary??!!
         drawMaze(canvas);
         canvas.drawPath(tracePath, routePainter);
     }
 
     public void drawMaze(Canvas canvas) {
-        //int image_width = cellSize * columns;
-        //int image_height = cellSize * rows;
-
         if (grid.isPresent()) {
             Grid maze = grid.get();
-            int cellWidth = canvas.getWidth() / maze.getColumns();
-            int cellHeight = canvas.getWidth() / maze.getRows();
+            int leftPadding = 10;
+            int rightPadding = 10;
+            int topPadding = 10;
+            int bottomPadding = 10;
+            int cellWidth = (canvas.getWidth() - leftPadding - rightPadding) / maze.getColumns();
+            int cellHeight = (canvas.getHeight() - topPadding - bottomPadding) / maze.getRows();
             for (int row = 0; row < maze.getRows(); row++) {
                 for (int column = 0; column < maze.getColumns(); column++) {
-                    int x1 = column * cellWidth;
-                    int y1 = row * cellHeight;
+                    int x1 = column * cellWidth + leftPadding;
+                    int y1 = row * cellHeight + topPadding;
                     int x2 = x1 + cellWidth;
                     int y2 = y1 + cellHeight;
                     Cell currentCell = maze.cellAt(row, column);
+                    colourPainter.setColor(maze.getCellBackgroundColour(currentCell));
+                    canvas.drawRect(x1,y1,x2,y2,colourPainter);
                     if (!currentCell.linkedCells.contains(currentCell.north.orNull())) {
                         canvas.drawLine(x1, y1, x2, y1, wallPainter);
                     }
@@ -95,29 +107,28 @@ public class MazeDrawView extends View {
                     if (!currentCell.linkedCells.contains(currentCell.south.orNull())) {
                         canvas.drawLine(x1, y2, x2, y2, wallPainter);
                     }
+                    if(maze.isStartCell(currentCell)) {
+                        int cx = (x1+x2)/2;
+                        int cy = (y1+y2)/2;
+                        canvas.drawCircle(cx, cy, Math.min(y2-cy, x2-cx), startPainter);
+                    }
+                    if(maze.isFinishCell(currentCell)) {
+                        int cx = (x1+x2)/2;
+                        int cy = (y1+y2)/2;
+                        canvas.drawCircle(cx, cy, Math.min(y2-cy, x2-cx), finishPainter);
+                    }
                 }
             }
         }
     }
 
-    private Paint makeWallPainter() {
-        Paint wallPaint = new Paint();
-        wallPaint.setAntiAlias(true);
-        wallPaint.setColor(Color.BLACK);
-        wallPaint.setStyle(Paint.Style.STROKE);
-        wallPaint.setStrokeJoin(Paint.Join.ROUND);
-        wallPaint.setStrokeWidth(4f);
-        return wallPaint;
-    }
-
-    private Paint makeRoutePainter() {
-        Paint routePaint = new Paint();
-        routePaint.setAntiAlias(true);
-        routePaint.setColor(Color.RED);
-        routePaint.setStyle(Paint.Style.STROKE);
-        routePaint.setStrokeJoin(Paint.Join.ROUND);
-        routePaint.setStrokeWidth(4f);
-        return routePaint;
+    private Paint makeLinePainter() {
+        Paint painter = new Paint();
+        painter.setAntiAlias(true);
+        painter.setStyle(Paint.Style.STROKE);
+        painter.setStrokeJoin(Paint.Join.ROUND);
+        painter.setStrokeWidth(4f);
+        return painter;
     }
 
     // when ACTION_DOWN start touch according to the x,y values

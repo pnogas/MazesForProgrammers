@@ -136,10 +136,6 @@ public class NormalGrid implements Grid {
         return mPaint;
     }
 
-    public void drawToCanvas(MazeDrawView mazeDrawView) {
-
-    }
-
     @Override
     public Cell cellAt(int x, int y) {
         return cells[x][y];
@@ -158,5 +154,20 @@ public class NormalGrid implements Grid {
     @Override
     public int getRows() {
         return rows;
+    }
+
+    @Override
+    public int getCellBackgroundColour(Cell cell) {
+        return Color.WHITE;
+    }
+
+    @Override
+    public boolean isStartCell(Cell currentCell) {
+        return false;
+    }
+
+    @Override
+    public boolean isFinishCell(Cell currentCell) {
+        return false;
     }
 }
