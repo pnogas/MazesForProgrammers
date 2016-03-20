@@ -8,8 +8,8 @@ import android.util.Log;
  */
 public class ColouredGrid extends DistanceGrid {
 
-    public ColouredGrid(int rows, int columns) {
-        super(rows, columns);
+    public ColouredGrid(int columns, int rows) {
+        super(columns, rows);
     }
 
     public int getCellBackgroundColour(Cell cell) {
@@ -17,6 +17,9 @@ public class ColouredGrid extends DistanceGrid {
             return Color.WHITE;
         }
         int distance = distances.getDistanceToCell(cell);
+        if (distance == -1) {
+            return Color.RED;
+        }
         float intensity = (float)(maxDistance - distance)/maxDistance;
         int RB = Math.round(255 * intensity);
         int G = Math.round(128 + 127 * intensity);

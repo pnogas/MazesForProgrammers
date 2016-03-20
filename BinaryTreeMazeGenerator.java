@@ -8,10 +8,11 @@ import java.util.Random;
  */
 public class BinaryTreeMazeGenerator implements MazeGenerator {
 
-    public NormalGrid generateMaze(NormalGrid grid) {
+    @Override
+    public Grid generateMaze(Grid grid) {
         Random randomGenerator = new Random();
-        for (Cell[] row : grid.cells) {
-            for (Cell cell : row) {
+        for (Cell[] column : grid.getCells()) {
+            for (Cell cell : column) {
                 ArrayList<Cell> neighbours = new ArrayList<>();
                 if (cell.north.isPresent()) {
                     neighbours.add(cell.north.get());

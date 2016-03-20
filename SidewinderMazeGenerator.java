@@ -1,5 +1,7 @@
 package com.paulnogas.mazesforprogrammers;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,25 +10,25 @@ import java.util.Random;
  */
 public class SidewinderMazeGenerator implements MazeGenerator {
     @Override
-    public NormalGrid generateMaze(NormalGrid grid) {
+    public Grid generateMaze(Grid grid) {
         Random randomGenerator = new Random();
         ArrayList<Cell> run = new ArrayList<>();
-        for (Cell[] row : grid.cells) {
+        for (Cell[] column : grid.getCells()) {
             run.clear();
-            for (Cell cell : row) {
+            for (Cell cell : column) {
                 run.add(cell);
                 boolean atEasternBoundry = !cell.east.isPresent();
-                boolean atNorthernBoundry = !cell.north.isPresent();
-                boolean shouldCloseOut = atEasternBoundry || (!atNorthernBoundry && randomGenerator.nextInt(2) != 0);
+                boolean atSouthernBoundry = !cell.south.isPresent();
+                boolean shouldCloseOut = atSouthernBoundry || (! atEasternBoundry && randomGenerator.nextInt(2) != 0);
                 if (shouldCloseOut) {
                     Cell member = run.get(randomGenerator.nextInt(run.size()));
-                    if (member.north.isPresent()) {
-                        member.link(member.north.get(), true);
+                    if (member.east.isPresent()) {
+                        member.link(member.east.get(), true);
                     }
                     run.clear();
                 } else {
-                    if (cell.east.isPresent()) {
-                        cell.link(cell.east.get(), true);
+                    if (cell.south.isPresent()) {
+                        cell.link(cell.south.get(), true);
                     }
                 }
             }

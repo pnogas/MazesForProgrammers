@@ -8,8 +8,8 @@ public class DistanceGrid extends NormalGrid {
     protected Distances distances;
     protected int maxDistance;
 
-    public DistanceGrid(int rows, int columns) {
-        super(rows, columns);
+    public DistanceGrid(int columns, int rows) {
+        super(columns, rows);
     }
 
     @Override

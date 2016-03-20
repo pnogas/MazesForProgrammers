@@ -3,6 +3,7 @@ package com.paulnogas.mazesforprogrammers;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,29 +20,31 @@ public class NormalGrid implements Grid {
     int columns;
     Random randomGenerator = new Random();
 
-    public NormalGrid(int rows, int columns) {
+
+
+    public NormalGrid(int columns, int rows) {
         this.rows = rows;
         this.columns = columns;
-        cells = new Cell[rows][columns];
+        cells = new Cell[columns][rows];
         prepareGrid();
         configureCells();
     }
 
     private void prepareGrid() {
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                cells[row][column] = new Cell(row, column);
+        for (int column = 0; column < columns; column++) {
+            for (int row = 0; row < rows; row++) {
+                cells[column][row] = new Cell(column, row);
             }
         }
     }
 
     private void configureCells() {
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                cells[row][column].north = (row - 1 < 0) ? Optional.<Cell>absent() : Optional.of(cells[row - 1][column]);
-                cells[row][column].south = (row + 1 >= rows) ? Optional.<Cell>absent() : Optional.of(cells[row + 1][column]);
-                cells[row][column].west = (column - 1 < 0) ? Optional.<Cell>absent() : Optional.of(cells[row][column - 1]);
-                cells[row][column].east = (column + 1 >= columns) ? Optional.<Cell>absent() : Optional.of(cells[row][column + 1]);
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
+                cells[x][y].north = (y - 1 < 0) ? Optional.<Cell>absent() : Optional.of(cells[x][y-1]);
+                cells[x][y].south = (y + 1 >= rows) ? Optional.<Cell>absent() : Optional.of(cells[x][y+1]);
+                cells[x][y].west = (x - 1 < 0) ? Optional.<Cell>absent() : Optional.of(cells[x-1][y]);
+                cells[x][y].east = (x + 1 >= columns) ? Optional.<Cell>absent() : Optional.of(cells[x +1][y]);
             }
         }
     }
@@ -68,15 +71,24 @@ public class NormalGrid implements Grid {
         return " ";
     }
 
+    public String cellMapString(){
+        String s = "";
+        for (Cell[] column : cells) {
+            for (Cell cell : column) {
+                s+=cell.toString();
+            }
+        }
+        return s;
+    }
 
     public String toString() {
         String output;
         try {
             output = "+" + StringUtils.repeat("---+", columns) + "\n";
-            for (Cell[] row : cells) {
+            for (Cell[] column : cells) {
                 String top = "|";
                 String bottom = "+";
-                for (Cell cell : row) {
+                for (Cell cell : column) {
                     String body = " " + contentsOf(cell) + " ";
                     String east_boundary = cell.east.isPresent() && cell.linkedCells.contains(cell.east.get()) ? " " : "|";
                     top += body;
@@ -104,22 +116,22 @@ public class NormalGrid implements Grid {
         //canvas.onSizeChanged();
         Paint wallPainter = makeWallPainter();
 
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                int x1 = column * cellSize;
-                int y1 = row * cellSize;
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
+                int x1 = x * cellSize;
+                int y1 = y * cellSize;
                 int x2 = x1 + cellSize;
                 int y2 = y1 + cellSize;
-                if (!cells[row][column].north.isPresent()) {
+                if (!cells[x][y].north.isPresent()) {
                     canvas.drawLine(x1, y1, x2, y1, wallPainter);
                 }
-                if (!cells[row][column].west.isPresent()) {
+                if (!cells[x][y].west.isPresent()) {
                     canvas.drawLine(x1, y1, x1, y2, wallPainter);
                 }
-                if (!cells[row][column].east.isPresent()) {
+                if (!cells[x][y].east.isPresent()) {
                     canvas.drawLine(x2, y1, x2, y2, wallPainter);
                 }
-                if (!cells[row][column].south.isPresent()) {
+                if (!cells[x][y].south.isPresent()) {
                     canvas.drawLine(x1, y2, x2, y2, wallPainter);
                 }
             }
@@ -169,5 +181,10 @@ public class NormalGrid implements Grid {
     @Override
     public boolean isFinishCell(Cell currentCell) {
         return false;
+    }
+
+    @Override
+    public Cell[][] getCells() {
+        return cells;
     }
 }

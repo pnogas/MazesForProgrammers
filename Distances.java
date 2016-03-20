@@ -1,5 +1,7 @@
 package com.paulnogas.mazesforprogrammers;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +21,11 @@ public class Distances {
     }
 
     public Integer getDistanceToCell(Cell cell) {
-        return cells.get(cell);
+        if (cells.keySet().contains(cell)) {
+            return cells.get(cell);
+        } else {
+            return -1;
+        }
     }
 
     public void setDistanceToCell(Cell cell, Integer distance) {

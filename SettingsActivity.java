@@ -59,25 +59,25 @@ public class SettingsActivity extends AppCompatActivity {
             widthSeekBarPreference = new SeekBarPreference(getActivity());
             this.getPreferenceScreen().addPreference(widthSeekBarPreference);
 
-            widthSeekBarPreference.setTitle(getResources().getString(R.string.width_pref_title));
+            widthSeekBarPreference.setTitle(getResources().getString(R.string.columns_pref_title));
             widthSeekBarPreference.setSummary("The number of rows in your maze");
             widthSeekBarPreference.setMaxValue(25);//17 for ascii
             widthSeekBarPreference.setMinValue(2);
             widthSeekBarPreference.setInterval(1);
             widthSeekBarPreference.setMeasurementUnit("rows");
-            int currentWidth = sharedPreferences.getInt((String) widthSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_width));
+            int currentWidth = sharedPreferences.getInt((String) widthSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_columns));
             widthSeekBarPreference.setCurrentValue(currentWidth);
 
             heightSeekBarPreference = new SeekBarPreference(getActivity());
             this.getPreferenceScreen().addPreference(heightSeekBarPreference);
 
-            heightSeekBarPreference.setTitle(getResources().getString(R.string.length_pref_title));
+            heightSeekBarPreference.setTitle(getResources().getString(R.string.rows_pref_title));
             heightSeekBarPreference.setSummary("The number of columns in your maze");
             heightSeekBarPreference.setMaxValue(25); //10 for ascii
             heightSeekBarPreference.setMinValue(2);
             heightSeekBarPreference.setInterval(1);
             heightSeekBarPreference.setMeasurementUnit("columns");
-            int currentHeight = sharedPreferences.getInt((String) heightSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_length));
+            int currentHeight = sharedPreferences.getInt((String) heightSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_rows));
             heightSeekBarPreference.setCurrentValue(currentHeight);
         }
     }

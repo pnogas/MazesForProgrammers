@@ -35,8 +35,8 @@ public class MainActivity extends ActionBarActivity
     private String[] mMazeAlgorithms;
     private NormalGrid mGrid;
     private MazeGenerator[] mMazeGenerators;
-    private int length;
-    private int width;
+    private int columns;
+    private int rows;
     private Context context;
 
     @Override
@@ -49,6 +49,8 @@ public class MainActivity extends ActionBarActivity
         mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
         mMazeGenerators[0] = new BinaryTreeMazeGenerator();
         mMazeGenerators[1] = new SidewinderMazeGenerator();
+        mMazeGenerators[2] = new AldousBroderMazeGenerator();
+        mMazeGenerators[3] = new WilsonsGenerator();
 
         //width = 15;
         //length = 9;
@@ -83,10 +85,14 @@ public class MainActivity extends ActionBarActivity
 
     public void onSectionAttached(int number) {
         mTitle = mMazeAlgorithms[number - 1];
-        length = getMazePrefLength();
-        width = getMazePrefWidth();
-        Grid maze = mMazeGenerators[number - 1].generateMaze(new ColouredGrid(width, length));
-        Cell start = maze.cellAt(0, 0);
+        columns = getMazePrefColumns();
+        rows = getMazePrefRows();
+        Grid grid = new ColouredGrid(columns, rows);
+        MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
+        MazeGeneratorTaskParams taskParams = new MazeGeneratorTaskParams(grid, mMazeGenerators[number - 1], mazeDrawView);
+        MazeGeneratorTask task = new MazeGeneratorTask();
+        task.doInBackground(taskParams);
+        /*Cell start = maze.cellAt(0, 0);
 
         Distances distances = start.getDistances();
         Cell newStart = distances.getFurthestCell();
@@ -94,7 +100,7 @@ public class MainActivity extends ActionBarActivity
         Distances newDistances = newStart.getDistances();
         Cell newGoal = newDistances.getFurthestCell();
 
-        maze.setDistances(newDistances);
+        maze.setDistances(newDistances);*/
         /*String displayString = maze.toString();
         displayString += "\n Solution: \n";
 
@@ -102,10 +108,11 @@ public class MainActivity extends ActionBarActivity
         maze.setDistances(solution);
         displayString += maze.toString();*/
 
-        /**/
+        /*
         MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
         mazeDrawView.setGrid(maze);
         mazeDrawView.clearRoute();
+        */
 
 
         /*
@@ -115,14 +122,14 @@ public class MainActivity extends ActionBarActivity
 
     }
 
-    private int getMazePrefLength() {
+    private int getMazePrefColumns() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.MAZE_PREFS, MODE_PRIVATE);
-        return sharedPreferences.getInt(getResources().getString(R.string.length_pref_title), getResources().getInteger(R.integer.default_maze_length));
+        return sharedPreferences.getInt(getResources().getString(R.string.columns_pref_title), getResources().getInteger(R.integer.default_maze_columns));
     }
 
-    private int getMazePrefWidth() {
+    private int getMazePrefRows() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.MAZE_PREFS, MODE_PRIVATE);
-        return sharedPreferences.getInt(getResources().getString(R.string.width_pref_title), getResources().getInteger(R.integer.default_maze_width));
+        return sharedPreferences.getInt(getResources().getString(R.string.rows_pref_title), getResources().getInteger(R.integer.default_maze_rows));
     }
 
     public void restoreActionBar() {

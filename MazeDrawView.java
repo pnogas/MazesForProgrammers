@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.graphics.Bitmap;
 import android.graphics.Path;
@@ -86,13 +87,13 @@ public class MazeDrawView extends View {
             int bottomPadding = 10;
             int cellWidth = (canvas.getWidth() - leftPadding - rightPadding) / maze.getColumns();
             int cellHeight = (canvas.getHeight() - topPadding - bottomPadding) / maze.getRows();
-            for (int row = 0; row < maze.getRows(); row++) {
-                for (int column = 0; column < maze.getColumns(); column++) {
-                    int x1 = column * cellWidth + leftPadding;
-                    int y1 = row * cellHeight + topPadding;
+            for (int x = 0; x < maze.getColumns(); x++) {
+                for (int y = 0; y < maze.getRows(); y++) {
+                    int x1 = x * cellWidth + leftPadding;
+                    int y1 = y * cellHeight + topPadding;
                     int x2 = x1 + cellWidth;
                     int y2 = y1 + cellHeight;
-                    Cell currentCell = maze.cellAt(row, column);
+                    Cell currentCell = maze.cellAt(x, y);
                     colourPainter.setColor(maze.getCellBackgroundColour(currentCell));
                     canvas.drawRect(x1,y1,x2,y2,colourPainter);
                     if (!currentCell.linkedCells.contains(currentCell.north.orNull())) {
@@ -110,12 +111,12 @@ public class MazeDrawView extends View {
                     if(maze.isStartCell(currentCell)) {
                         int cx = (x1+x2)/2;
                         int cy = (y1+y2)/2;
-                        canvas.drawCircle(cx, cy, Math.min(y2-cy, x2-cx), startPainter);
+                        canvas.drawCircle(cx, cy, Math.min(y2-cy, x2-cx)-wallPainter.getStrokeWidth(), startPainter);
                     }
                     if(maze.isFinishCell(currentCell)) {
                         int cx = (x1+x2)/2;
                         int cy = (y1+y2)/2;
-                        canvas.drawCircle(cx, cy, Math.min(y2-cy, x2-cx), finishPainter);
+                        canvas.drawCircle(cx, cy, Math.min(y2-cy, x2-cx)-wallPainter.getStrokeWidth(), finishPainter);
                     }
                 }
             }

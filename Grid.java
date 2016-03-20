@@ -14,7 +14,9 @@ public interface Grid {
 
     public int getCellBackgroundColour(Cell cell);
 
-    boolean isStartCell(Cell currentCell);
+    public boolean isStartCell(Cell currentCell);
 
-    boolean isFinishCell(Cell currentCell);
+    public boolean isFinishCell(Cell currentCell);
+
+    public Cell[][] getCells();
 }

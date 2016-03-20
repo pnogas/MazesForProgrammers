@@ -9,8 +9,8 @@ import java.util.Set;
  * Created by Paul Nogas on 2016-03-11
  */
 public class Cell {
-    int row;
-    int column;
+    public int row;
+    public int column;
     Optional<Cell> north;
     Optional<Cell> south;
     Optional<Cell> east;
@@ -79,5 +79,40 @@ public class Cell {
             frontierCells = newFrontier;
         }
         return distances;
+    }
+
+    public String simpleString(){
+        return String.format("CELL(%s,%s):", column, row);
+    }
+
+    @Override
+    public String toString() {
+        String s = "";
+        s += String.format("CELL(%s,%s):", column, row);
+        if (north.isPresent()) {
+            s += String.format("N:(%s,%s)", north.get().column, north.get().row);
+            if (linkedCells.contains(north.get())) {
+                s += "L";
+            }
+        }
+        if (south.isPresent()) {
+            s += String.format("S:(%s,%s)", south.get().column, south.get().row);
+            if (linkedCells.contains(south.get())) {
+                s += "L";
+            }
+        }
+        if (west.isPresent()) {
+            s += String.format("W:(%s,%s)", west.get().column, west.get().row);
+            if (linkedCells.contains(west.get())) {
+                s += "L";
+            }
+        }
+        if (east.isPresent()) {
+            s += String.format("E:(%s,%s)", east.get().column, east.get().row);
+            if (linkedCells.contains(east.get())) {
+                s += "L";
+            }
+        }
+        return s;
     }
 }
