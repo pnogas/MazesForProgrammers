@@ -33,7 +33,17 @@ public class DistanceGrid extends NormalGrid {
     }
 
     @Override
+    public Cell getStartCell() {
+        return distances.getRoot();
+    }
+
+    @Override
     public boolean isFinishCell(Cell currentCell) {
         return currentCell != null && currentCell.equals(distances.getFurthestCell());
+    }
+
+    @Override
+    public Cell getFinishCell() {
+        return distances.getFurthestCell();
     }
 }

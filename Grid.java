@@ -16,7 +16,11 @@ public interface Grid {
 
     public boolean isStartCell(Cell currentCell);
 
+    public Cell getStartCell();
+
     public boolean isFinishCell(Cell currentCell);
+
+    public Cell getFinishCell();
 
     public Cell[][] getCells();
 }

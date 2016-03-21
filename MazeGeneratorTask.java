@@ -27,7 +27,7 @@ public class MazeGeneratorTask extends AsyncTask<MazeGeneratorTaskParams, Intege
         completedMaze.setDistances(newDistances);
 
         mazeDrawView.setGrid(completedMaze);
-        mazeDrawView.clearRoute();
+        //mazeDrawView.clearRoute();
         return completedMaze;
     }
 
@@ -35,6 +35,6 @@ public class MazeGeneratorTask extends AsyncTask<MazeGeneratorTaskParams, Intege
     protected void onPostExecute(Grid completedMaze) {
         super.onPostExecute(completedMaze);
         mazeDrawView.setGrid(completedMaze); //why isn't this called?
-        mazeDrawView.clearRoute();
+        //mazeDrawView.clearRoute();
     }
 }

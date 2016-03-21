@@ -179,8 +179,18 @@ public class NormalGrid implements Grid {
     }
 
     @Override
+    public Cell getStartCell() {
+        return null;
+    }
+
+    @Override
     public boolean isFinishCell(Cell currentCell) {
         return false;
+    }
+
+    @Override
+    public Cell getFinishCell() {
+        return null;
     }
 
     @Override

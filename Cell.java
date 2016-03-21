@@ -17,9 +17,9 @@ public class Cell {
     Optional<Cell> west;
     HashSet<Cell> linkedCells;
 
-    public Cell(int row, int column) {
-        this.row = row;
+    public Cell(int column, int row) {
         this.column = column;
+        this.row = row;
         linkedCells = new HashSet<>();
     }
 

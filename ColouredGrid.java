@@ -8,21 +8,24 @@ import android.util.Log;
  */
 public class ColouredGrid extends DistanceGrid {
 
-    public ColouredGrid(int columns, int rows) {
+    private boolean showHeatMap;
+
+    public ColouredGrid(int columns, int rows, boolean showHeatMap) {
         super(columns, rows);
+        this.showHeatMap = showHeatMap;
     }
 
     public int getCellBackgroundColour(Cell cell) {
-        if (distances == null) {
+        if (distances == null || !showHeatMap) {
             return Color.WHITE;
         }
         int distance = distances.getDistanceToCell(cell);
         if (distance == -1) {
-            return Color.RED;
+            return Color.BLACK;
         }
         float intensity = (float)(maxDistance - distance)/maxDistance;
-        int RB = Math.round(255 * intensity);
-        int G = Math.round(128 + 127 * intensity);
-        return Color.rgb(RB,G,RB);
+        int GB = Math.round(255 * intensity);
+        int R = Math.round(180 + 75 * intensity);
+        return Color.rgb(R,GB,GB);
     }
 }

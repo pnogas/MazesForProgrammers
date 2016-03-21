@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     static SeekBarPreference widthSeekBarPreference;
     static SeekBarPreference heightSeekBarPreference;
+    static CheckBoxPreference heatMapCheckPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
             widthSeekBarPreference.setMaxValue(25);//17 for ascii
             widthSeekBarPreference.setMinValue(2);
             widthSeekBarPreference.setInterval(1);
-            widthSeekBarPreference.setMeasurementUnit("rows");
+            widthSeekBarPreference.setMeasurementUnit("columns");
             int currentWidth = sharedPreferences.getInt((String) widthSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_columns));
             widthSeekBarPreference.setCurrentValue(currentWidth);
 
@@ -76,9 +78,16 @@ public class SettingsActivity extends AppCompatActivity {
             heightSeekBarPreference.setMaxValue(25); //10 for ascii
             heightSeekBarPreference.setMinValue(2);
             heightSeekBarPreference.setInterval(1);
-            heightSeekBarPreference.setMeasurementUnit("columns");
+            heightSeekBarPreference.setMeasurementUnit("rows");
             int currentHeight = sharedPreferences.getInt((String) heightSeekBarPreference.getTitle(), getResources().getInteger(R.integer.default_maze_rows));
             heightSeekBarPreference.setCurrentValue(currentHeight);
+
+            heatMapCheckPreference = new CheckBoxPreference(getActivity());
+            this.getPreferenceScreen().addPreference(heatMapCheckPreference);
+            heatMapCheckPreference.setTitle(R.string.heat_map_pref_title);
+            heatMapCheckPreference.setSummary("colours the map showing distance from start to finish");
+            boolean currentHeatMapStatus = sharedPreferences.getBoolean((String) heatMapCheckPreference.getTitle(), false);
+            heatMapCheckPreference.setChecked(currentHeatMapStatus);
         }
     }
 
@@ -93,6 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt((String) widthSeekBarPreference.getTitle(), widthSeekBarPreference.getCurrentValue());
         editor.putInt((String) heightSeekBarPreference.getTitle(), heightSeekBarPreference.getCurrentValue());
+        editor.putBoolean((String) heatMapCheckPreference.getTitle(), heatMapCheckPreference.isChecked());
         editor.apply();
     }
 }

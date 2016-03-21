@@ -1,7 +1,9 @@
 package com.paulnogas.mazesforprogrammers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
@@ -37,6 +39,7 @@ public class MainActivity extends ActionBarActivity
     private MazeGenerator[] mMazeGenerators;
     private int columns;
     private int rows;
+    private boolean showHeatMap;
     private Context context;
 
     @Override
@@ -45,12 +48,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
-        mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
-        mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
-        mMazeGenerators[0] = new BinaryTreeMazeGenerator();
-        mMazeGenerators[1] = new SidewinderMazeGenerator();
-        mMazeGenerators[2] = new AldousBroderMazeGenerator();
-        mMazeGenerators[3] = new WilsonsGenerator();
+        prepareAlgorithms();
 
         //width = 15;
         //length = 9;
@@ -74,6 +72,15 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
+    private void prepareAlgorithms() {
+        mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
+        mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
+        mMazeGenerators[0] = new BinaryTreeMazeGenerator();
+        mMazeGenerators[1] = new SidewinderMazeGenerator();
+        mMazeGenerators[2] = new AldousBroderMazeGenerator();
+        mMazeGenerators[3] = new WilsonsGenerator();
+    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -84,10 +91,28 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onSectionAttached(int number) {
+        if (mMazeAlgorithms == null) {
+            prepareAlgorithms();
+        }
+
+
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(String.format("Flick to move black ball\nclick maze algorithm to generate new")).
+                setCancelable(false).
+                setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //do nothing
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();*/
+
         mTitle = mMazeAlgorithms[number - 1];
         columns = getMazePrefColumns();
         rows = getMazePrefRows();
-        Grid grid = new ColouredGrid(columns, rows);
+        showHeatMap = getHeatMapStatus();
+        Grid grid = new ColouredGrid(columns, rows, showHeatMap);
         MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
         MazeGeneratorTaskParams taskParams = new MazeGeneratorTaskParams(grid, mMazeGenerators[number - 1], mazeDrawView);
         MazeGeneratorTask task = new MazeGeneratorTask();
@@ -130,6 +155,11 @@ public class MainActivity extends ActionBarActivity
     private int getMazePrefRows() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.MAZE_PREFS, MODE_PRIVATE);
         return sharedPreferences.getInt(getResources().getString(R.string.rows_pref_title), getResources().getInteger(R.integer.default_maze_rows));
+    }
+
+    private boolean getHeatMapStatus() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsActivity.MAZE_PREFS, MODE_PRIVATE);
+        return sharedPreferences.getBoolean(getResources().getString(R.string.heat_map_pref_title), false);
     }
 
     public void restoreActionBar() {
