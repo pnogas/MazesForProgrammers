@@ -26,7 +26,9 @@ public class MazeGeneratorTask extends AsyncTask<MazeGeneratorTaskParams, Intege
 
         completedMaze.setDistances(newDistances);
 
-        mazeDrawView.setGrid(completedMaze);
+        if (mazeDrawView != null) {
+            mazeDrawView.setGrid(completedMaze);
+        }
         //mazeDrawView.clearRoute();
         return completedMaze;
     }

@@ -1,5 +1,7 @@
 package com.paulnogas.mazesforprogrammers;
 
+import java.util.Set;
+
 /**
  * Created by Paul Nogas on 2016-03-14
  */
@@ -23,4 +25,8 @@ public interface Grid {
     public Cell getFinishCell();
 
     public Cell[][] getCells();
+
+    public Cell randomCell();
+
+    public Set<Cell> deadEnds();
 }

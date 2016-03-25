@@ -9,7 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Optional;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by Paul Nogas on 2016-03-11
@@ -53,6 +55,19 @@ public class NormalGrid implements Grid {
         int row = randomGenerator.nextInt(rows);
         int column = randomGenerator.nextInt(columns);
         return cells[row][column];
+    }
+
+    @Override
+    public Set<Cell> deadEnds() {
+        Set<Cell> deadEnds = new HashSet<>();
+        for (int x = 0; x < getColumns(); x ++) {
+            for (int y = 0; y < getRows(); y++) {
+                if (cells[x][y].linkedCells.size() == 1) {
+                    deadEnds.add(cells[x][y]);
+                }
+            }
+        }
+        return deadEnds;
     }
 
     private int size() {

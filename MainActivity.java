@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -41,12 +42,13 @@ public class MainActivity extends ActionBarActivity
     private int rows;
     private boolean showHeatMap;
     private Context context;
+    private int currentAlogirthm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = getApplicationContext();
+        context = this;
 
         prepareAlgorithms();
 
@@ -72,6 +74,15 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentAlogirthm > 0) {
+            displayMaze(currentAlogirthm);
+        }
+
+    }
+
     private void prepareAlgorithms() {
         mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
         mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
@@ -79,6 +90,7 @@ public class MainActivity extends ActionBarActivity
         mMazeGenerators[1] = new SidewinderMazeGenerator();
         mMazeGenerators[2] = new AldousBroderMazeGenerator();
         mMazeGenerators[3] = new WilsonsGenerator();
+        mMazeGenerators[4] = new HuntAndKillGenerator();
     }
 
     @Override
@@ -108,15 +120,7 @@ public class MainActivity extends ActionBarActivity
         AlertDialog alert = builder.create();
         alert.show();*/
 
-        mTitle = mMazeAlgorithms[number - 1];
-        columns = getMazePrefColumns();
-        rows = getMazePrefRows();
-        showHeatMap = getHeatMapStatus();
-        Grid grid = new ColouredGrid(columns, rows, showHeatMap);
-        MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
-        MazeGeneratorTaskParams taskParams = new MazeGeneratorTaskParams(grid, mMazeGenerators[number - 1], mazeDrawView);
-        MazeGeneratorTask task = new MazeGeneratorTask();
-        task.doInBackground(taskParams);
+        displayMaze(number);
         /*Cell start = maze.cellAt(0, 0);
 
         Distances distances = start.getDistances();
@@ -145,6 +149,22 @@ public class MainActivity extends ActionBarActivity
         tv.setText(displayString);*/
 
 
+    }
+
+    private void displayMaze(int number) {
+        if (context == null) {
+            context = this;
+        }
+        currentAlogirthm = number;
+        mTitle = mMazeAlgorithms[number - 1];
+        columns = getMazePrefColumns();
+        rows = getMazePrefRows();
+        showHeatMap = getHeatMapStatus();
+        Grid grid = new ColouredGrid(columns, rows, showHeatMap);
+        MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
+        MazeGeneratorTaskParams taskParams = new MazeGeneratorTaskParams(grid, mMazeGenerators[number - 1], mazeDrawView);
+        MazeGeneratorTask task = new MazeGeneratorTask();
+        task.doInBackground(taskParams);
     }
 
     private int getMazePrefColumns() {
@@ -209,10 +229,18 @@ public class MainActivity extends ActionBarActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setReenterTransition(true);
+        }
+
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
+
+
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
