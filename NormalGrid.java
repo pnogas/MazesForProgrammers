@@ -22,8 +22,6 @@ public class NormalGrid implements Grid {
     int columns;
     Random randomGenerator = new Random();
 
-
-
     public NormalGrid(int columns, int rows) {
         this.rows = rows;
         this.columns = columns;
@@ -52,9 +50,9 @@ public class NormalGrid implements Grid {
     }
 
     public Cell randomCell() {
-        int row = randomGenerator.nextInt(rows);
         int column = randomGenerator.nextInt(columns);
-        return cells[row][column];
+        int row = randomGenerator.nextInt(rows);
+        return cells[column][row];
     }
 
     @Override

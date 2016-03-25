@@ -91,6 +91,7 @@ public class MainActivity extends ActionBarActivity
         mMazeGenerators[2] = new AldousBroderMazeGenerator();
         mMazeGenerators[3] = new WilsonsGenerator();
         mMazeGenerators[4] = new HuntAndKillGenerator();
+        mMazeGenerators[5] = new RecursiveBacktrackerGenerator();
     }
 
     @Override
