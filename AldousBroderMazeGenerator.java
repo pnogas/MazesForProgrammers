@@ -1,43 +1,44 @@
 package com.paulnogas.mazesforprogrammers;
 
+import android.util.Log;
+
 import java.util.HashSet;
 import java.util.Random;
 
 /**
- * Created by Paul Nogas on 2016-03-19.
+ * Created by Paul Nogas on 2016-03-19
  */
 public class AldousBroderMazeGenerator implements MazeGenerator {
 
     @Override
-    public Grid generateMaze(Grid grid) {
-        Random random = new Random();
-        int columns = grid.getColumns();
-        int rows = grid.getRows();
-        Cell cell = grid.cellAt(random.nextInt(columns), random.nextInt(rows));
-        int unvisitedCellCount = columns * rows - 1;
-
-        Cell neighbor = new Cell(-1, -1); //just to avoid null pointer
-        int hashSetSize;
-        int item;
-        int i;
-
+    public Grid generateMaze(Grid grid) throws InterruptedException {
+        Cell cell = grid.randomCell();
+        int unvisitedCellCount = grid.size() - 1;
+        Cell neighbor;
         while (unvisitedCellCount > 0) {
             HashSet<Cell> neighbors = cell.neighbours();
-            hashSetSize = neighbors.size();
-            item = random.nextInt(hashSetSize);
-            i = 0;
-            for (Cell obj : neighbors) {
-                if (i == item) {
-                    neighbor = obj;
-                }
-                i = i + 1;
-            }
+            neighbor = getRandomNeighbour(neighbors);
             if (neighbor.linkedCells.isEmpty()) {
-                cell.link(neighbor, true);
+                Log.e("PAUL", "linked cells: " + cell.simpleString() + ", " + neighbor.simpleString());
+                cell.linkBiDirectional(neighbor);
                 unvisitedCellCount -= 1;
             }
             cell = neighbor;
         }
         return grid;
+    }
+
+    private Cell getRandomNeighbour(HashSet<Cell> neighbors) {
+        Cell neighbor = null;
+        int i = 0;
+        int hashSetSize = neighbors.size();
+        int item = Utils.randomInt(hashSetSize);
+        for (Cell obj : neighbors) {
+            if (i == item) {
+                neighbor = obj;
+            }
+            i = i + 1;
+        }
+        return neighbor;
     }
 }

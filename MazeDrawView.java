@@ -159,17 +159,21 @@ public class MazeDrawView extends View {
                     Cell currentCell = maze.cellAt(x, y);
                     colourPainter.setColor(maze.getCellBackgroundColour(currentCell));
                     canvas.drawRect(x1,y1,x2,y2,colourPainter);
-                    if (!currentCell.linkedCells.contains(currentCell.north.orNull())) {
-                        canvas.drawLine(x1, y1, x2, y1, wallPainter);
-                    }
-                    if (!currentCell.linkedCells.contains(currentCell.west.orNull())) {
-                        canvas.drawLine(x1, y1, x1, y2, wallPainter);
-                    }
-                    if (!currentCell.linkedCells.contains(currentCell.east.orNull())) {
-                        canvas.drawLine(x2, y1, x2, y2, wallPainter);
-                    }
-                    if (!currentCell.linkedCells.contains(currentCell.south.orNull())) {
-                        canvas.drawLine(x1, y2, x2, y2, wallPainter);
+                    if(currentCell != null) {
+                        if (!currentCell.linkedCells.contains(currentCell.north.orNull())) {
+                            canvas.drawLine(x1, y1, x2, y1, wallPainter);
+                        }
+                        if (!currentCell.linkedCells.contains(currentCell.west.orNull())) {
+                            canvas.drawLine(x1, y1, x1, y2, wallPainter);
+                        }
+                        if (!currentCell.linkedCells.contains(currentCell.east.orNull())) {
+                            canvas.drawLine(x2, y1, x2, y2, wallPainter);
+                        }
+                        if (!currentCell.linkedCells.contains(currentCell.south.orNull())) {
+                            canvas.drawLine(x1, y2, x2, y2, wallPainter);
+                        }
+                    } else {
+                        canvas.drawRect(x1,y1,x2,y2,wallPainter);
                     }
                     if(maze.isFinishCell(currentCell)) {
                         int cx = (x1+x2)/2;
@@ -187,7 +191,7 @@ public class MazeDrawView extends View {
     private Paint makeLinePainter() {
         Paint painter = new Paint();
         painter.setAntiAlias(true);
-        painter.setStyle(Paint.Style.STROKE);
+        painter.setStyle(Paint.Style.FILL_AND_STROKE);
         painter.setStrokeJoin(Paint.Join.ROUND);
         painter.setStrokeWidth(4f);
         return painter;

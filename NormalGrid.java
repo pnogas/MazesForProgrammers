@@ -27,10 +27,14 @@ public class NormalGrid implements Grid {
         this.columns = columns;
         cells = new Cell[columns][rows];
         prepareGrid();
-        configureCells();
+        try {
+            configureCells();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void prepareGrid() {
+    protected void prepareGrid() {
         for (int column = 0; column < columns; column++) {
             for (int row = 0; row < rows; row++) {
                 cells[column][row] = new Cell(column, row);
@@ -38,13 +42,15 @@ public class NormalGrid implements Grid {
         }
     }
 
-    private void configureCells() {
+    protected void configureCells() throws InterruptedException {
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
-                cells[x][y].north = (y - 1 < 0) ? Optional.<Cell>absent() : Optional.of(cells[x][y-1]);
-                cells[x][y].south = (y + 1 >= rows) ? Optional.<Cell>absent() : Optional.of(cells[x][y+1]);
-                cells[x][y].west = (x - 1 < 0) ? Optional.<Cell>absent() : Optional.of(cells[x-1][y]);
-                cells[x][y].east = (x + 1 >= columns) ? Optional.<Cell>absent() : Optional.of(cells[x +1][y]);
+                if (cells[x][y] != null) { //TODO: refactor this too to deal with masks!
+                    cells[x][y].north = (y - 1 < 0) ? Optional.<Cell>absent() : Optional.fromNullable(cells[x][y - 1]);
+                    cells[x][y].south = (y + 1 >= rows) ? Optional.<Cell>absent() : Optional.fromNullable(cells[x][y + 1]);
+                    cells[x][y].west = (x - 1 < 0) ? Optional.<Cell>absent() : Optional.fromNullable(cells[x - 1][y]);
+                    cells[x][y].east = (x + 1 >= columns) ? Optional.<Cell>absent() : Optional.fromNullable(cells[x + 1][y]);
+                }
             }
         }
     }
@@ -58,7 +64,7 @@ public class NormalGrid implements Grid {
     @Override
     public Set<Cell> deadEnds() {
         Set<Cell> deadEnds = new HashSet<>();
-        for (int x = 0; x < getColumns(); x ++) {
+        for (int x = 0; x < getColumns(); x++) {
             for (int y = 0; y < getRows(); y++) {
                 if (cells[x][y].linkedCells.size() == 1) {
                     deadEnds.add(cells[x][y]);
@@ -68,7 +74,7 @@ public class NormalGrid implements Grid {
         return deadEnds;
     }
 
-    private int size() {
+    public int size() {
         return rows * columns;
     }
 
@@ -84,11 +90,11 @@ public class NormalGrid implements Grid {
         return " ";
     }
 
-    public String cellMapString(){
+    public String cellMapString() {
         String s = "";
         for (Cell[] column : cells) {
             for (Cell cell : column) {
-                s+=cell.toString();
+                s += cell.toString();
             }
         }
         return s;

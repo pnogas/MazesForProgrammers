@@ -16,9 +16,14 @@ public class MazeGeneratorTask extends AsyncTask<MazeGeneratorTaskParams, Intege
         mazeDrawView = mazeGeneratorTaskParamses[0].getMazeDrawView();
         Grid grid = mazeGeneratorTaskParamses[0].getGrid();
         MazeGenerator mazeGenerator = mazeGeneratorTaskParamses[0].getMazeGenerator();
-        Grid completedMaze = mazeGenerator.generateMaze(grid);
+        Grid completedMaze = null;
+        try {
+            completedMaze = mazeGenerator.generateMaze(grid);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        Cell start = completedMaze.cellAt(0, 0);
+        Cell start = completedMaze.randomCell();
 
         Distances distances = start.getDistances();
         Cell newStart = distances.getFurthestCell();

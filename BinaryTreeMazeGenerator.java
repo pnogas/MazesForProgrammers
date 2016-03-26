@@ -23,7 +23,7 @@ public class BinaryTreeMazeGenerator implements MazeGenerator {
                 if (neighbours.size() > 0) {
                     int index = randomGenerator.nextInt(neighbours.size());
                     Cell randomNeighbour = neighbours.get(index);
-                    cell.link(randomNeighbour, true); //is it ever false?
+                    cell.linkBiDirectional(randomNeighbour);
                 }
             }
         }

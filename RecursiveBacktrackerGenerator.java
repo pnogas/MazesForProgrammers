@@ -25,7 +25,7 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
                 stack.pop();
             } else {
                 Cell nextCell = (Cell) Utils.getRandomElementFromSet(unvisitedNeighbours);
-                currentCell.link(nextCell, true);
+                currentCell.linkBiDirectional(nextCell);
                 stack.push(nextCell);
             }
         }

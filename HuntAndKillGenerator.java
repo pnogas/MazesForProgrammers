@@ -17,7 +17,7 @@ public class HuntAndKillGenerator implements MazeGenerator {
                 currentCell = scanGridForNewPathStart(grid);
             } else {
                 Cell chosenNeighbour = (Cell) Utils.getRandomElementFromSet(unvisitedNeighbours);
-                currentCell.link(chosenNeighbour, true);
+                currentCell.linkBiDirectional(chosenNeighbour);
                 currentCell = chosenNeighbour;
             }
         }
@@ -46,7 +46,7 @@ public class HuntAndKillGenerator implements MazeGenerator {
             }
             if (!isPartOfExistingPath(candidateCell) && !visitedNeighbours.isEmpty()) {
                 neighbour = (Cell) Utils.getRandomElementFromSet(visitedNeighbours);
-                candidateCell.link(neighbour, true);
+                candidateCell.linkBiDirectional(neighbour);
                 return candidateCell;
             }
 

@@ -86,12 +86,12 @@ public class MainActivity extends ActionBarActivity
     private void prepareAlgorithms() {
         mMazeAlgorithms = getResources().getStringArray(R.array.maze_algorithms_array);
         mMazeGenerators = new MazeGenerator[mMazeAlgorithms.length];
-        mMazeGenerators[0] = new BinaryTreeMazeGenerator();
-        mMazeGenerators[1] = new SidewinderMazeGenerator();
-        mMazeGenerators[2] = new AldousBroderMazeGenerator();
-        mMazeGenerators[3] = new WilsonsGenerator();
-        mMazeGenerators[4] = new HuntAndKillGenerator();
-        mMazeGenerators[5] = new RecursiveBacktrackerGenerator();
+        mMazeGenerators[0] = new AldousBroderMazeGenerator();
+        mMazeGenerators[1] = new WilsonsGenerator();
+        mMazeGenerators[2] = new HuntAndKillGenerator();
+        mMazeGenerators[3] = new RecursiveBacktrackerGenerator();
+        mMazeGenerators[4] = new BinaryTreeMazeGenerator();
+        mMazeGenerators[5] = new SidewinderMazeGenerator();
     }
 
     @Override
@@ -161,7 +161,8 @@ public class MainActivity extends ActionBarActivity
         columns = getMazePrefColumns();
         rows = getMazePrefRows();
         showHeatMap = getHeatMapStatus();
-        Grid grid = new ColouredGrid(columns, rows, showHeatMap);
+        KillingCells killingCells = new KillingCells();
+        Grid grid = killingCells.makeGrid(showHeatMap);
         MazeDrawView mazeDrawView = (MazeDrawView) findViewById(R.id.maze_canvas);
         MazeGeneratorTaskParams taskParams = new MazeGeneratorTaskParams(grid, mMazeGenerators[number - 1], mazeDrawView);
         MazeGeneratorTask task = new MazeGeneratorTask();

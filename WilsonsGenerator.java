@@ -48,7 +48,7 @@ public class WilsonsGenerator implements MazeGenerator {
                 }
             }
             for (int i = 0; i < path.size() - 1; i++) {
-                path.get(i).link(path.get(i + 1), true);
+                path.get(i).linkBiDirectional(path.get(i + 1));
                 unvisitedCells.remove(path.get(i));
             }
             path.clear();

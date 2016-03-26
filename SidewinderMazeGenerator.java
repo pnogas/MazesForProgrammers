@@ -23,12 +23,12 @@ public class SidewinderMazeGenerator implements MazeGenerator {
                 if (shouldCloseOut) {
                     Cell member = run.get(randomGenerator.nextInt(run.size()));
                     if (member.east.isPresent()) {
-                        member.link(member.east.get(), true);
+                        member.linkBiDirectional(member.east.get());
                     }
                     run.clear();
                 } else {
                     if (cell.south.isPresent()) {
-                        cell.link(cell.south.get(), true);
+                        cell.linkBiDirectional(cell.south.get());
                     }
                 }
             }

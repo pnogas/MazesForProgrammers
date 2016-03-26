@@ -11,11 +11,11 @@ import java.util.Set;
 public class Cell {
     public int row;
     public int column;
-    Optional<Cell> north;
-    Optional<Cell> south;
-    Optional<Cell> east;
-    Optional<Cell> west;
-    HashSet<Cell> linkedCells;
+    Optional<Cell> north = Optional.absent();
+    Optional<Cell> south = Optional.absent();
+    Optional<Cell> east = Optional.absent();
+    Optional<Cell> west = Optional.absent();
+    Set<Cell> linkedCells = new HashSet<>();
 
     public Cell(int column, int row) {
         this.column = column;
@@ -23,21 +23,25 @@ public class Cell {
         linkedCells = new HashSet<>();
     }
 
-    public void link(Cell cell, boolean biDirectional) {
+    public void linkBiDirectional(Cell cell) {
         linkedCells.add(cell);
-        if (biDirectional) {
-            cell.link(this, false);
-        }
+        cell.linkUniDirectional(this);
     }
 
-    public void unlink(Cell cell, boolean biDirectional) {
+    private void linkUniDirectional(Cell cell) {
+        linkedCells.add(cell);
+    }
+
+    public void unlinkBiDirectional(Cell cell) {
         linkedCells.remove(cell);
-        if (biDirectional) {
-            cell.unlink(this, false);
-        }
+        cell.unlinkUniDirectional(this);
     }
 
-    public HashSet<Cell> getLinks() {
+    private void unlinkUniDirectional(Cell cell) {
+        linkedCells.remove(cell);
+    }
+
+    public Set<Cell> getLinks() {
         return linkedCells;
     }
 

@@ -14,6 +14,8 @@ public interface Grid {
 
     public int getRows();
 
+    public int size();
+
     public int getCellBackgroundColour(Cell cell);
 
     public boolean isStartCell(Cell currentCell);
